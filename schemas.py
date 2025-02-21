@@ -9,10 +9,19 @@ class TaskBase(BaseModel):
     priority: int = 1
     status: Optional[int] = 1
     assignee: int
+    assigned_date: Optional[datetime] = None
 
 
 class TaskCreate(TaskBase):
     pass
+
+class TaskUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    priority: Optional[int] = None
+    status: Optional[int] = None
+    assignee: Optional[int] = None
+    assigned_date: Optional[datetime] = None
 
 class TaskResponse(TaskBase):
     id: int

@@ -40,7 +40,7 @@ def get_task(task_id: int, db: Session = Depends(get_db)):
     return task
 
 @app.put("/task/{task_id}", response_model=schemas.TaskResponse)
-def update_task(task_id: int, task: schemas.TaskCreate, db: Session = Depends(get_db)):
+def update_task(task_id: int, task: schemas.TaskUpdate, db: Session = Depends(get_db)):
     task = crud.update_task(db, task_id, task)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")

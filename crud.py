@@ -1,10 +1,11 @@
 from sqlalchemy.orm import Session
 from models import Task, User, Status
-from schemas import TaskCreate, TaskResponse, UserCreate, StatusCreate
+from schemas import TaskCreate, TaskUpdate, UserCreate, StatusCreate
 
 
 def create_task(db: Session, task: TaskCreate):
-    new_task = Task(title=task.title, description = task.description, priority = task.priority, assignee = task.assignee, status = task.status)
+    new_task = Task(title=task.title, description = task.description, priority = task.priority, 
+                    assignee = task.assignee,assigned_date =  task.assigned_date, status = task.status)
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
@@ -17,16 +18,15 @@ def get_tasks(db: Session):
 def get_task_by_id(db: Session, task_id: int):
     return db.query(Task).filter(Task.id == task_id).first()
 
-def update_task(db: Session, task_id: int, task_data: TaskCreate):
+def update_task(db: Session, task_id: int, task_data: TaskUpdate):
     task = db.query(Task).filter(Task.id == task_id).first()
     if task: 
-        task.title = task_data.title
-        task.description = task_data.description
-        task.assignee = task_data.assignee
-        task.status = task_data.status
+        task_data_dict = task_data.model_dump(exclude_unset=True)
+        for key, value in task_data_dict.items():
+            setattr(task, key, value)
         db.commit()
         db.refresh(task)
-
+        
     return task
 
 def delete_task(db: Session, task_id: int):

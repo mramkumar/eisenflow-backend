@@ -11,6 +11,7 @@ class Task(Base):
     title = Column(Text, nullable=False)
     description = Column(Text,nullable=True)
     created_date = Column(DateTime, server_default=func.now())
+    assigned_date = Column(DateTime, nullable=True)
     priority = Column(Integer, ForeignKey('quadrant_priority.id'), nullable=False)
     assignee = Column(Integer, ForeignKey('users.id'),  nullable=False)
     status = Column(Integer, ForeignKey('status.id'),  server_default=expression.text('1')) # default: Open
