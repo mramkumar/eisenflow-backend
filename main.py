@@ -1,6 +1,7 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from datetime import date
 from database import engine, get_db, Base
 import crud
 import schemas
@@ -29,8 +30,8 @@ def add_task(task: schemas.TaskCreate, db: Session = Depends(get_db)):
 
 
 @app.get("/tasks", response_model=list[schemas.TaskResponse])
-def get_tasks(db: Session = Depends(get_db)):
-    return crud.get_tasks(db)
+def get_tasks(db: Session = Depends(get_db), assigned_date: date = Query(None, description="Date in YYYY-MM-DD format")):
+    return crud.get_tasks(db, assigned_date)
 
 @app.get("/task/{task_id}", response_model=schemas.TaskResponse)
 def get_task(task_id: int, db: Session = Depends(get_db)):

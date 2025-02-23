@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from datetime import date 
 from models import Task, User, Status
 from schemas import TaskCreate, TaskUpdate, UserCreate, StatusCreate
 
@@ -12,8 +13,8 @@ def create_task(db: Session, task: TaskCreate):
     return new_task
 
 
-def get_tasks(db: Session):
-    return db.query(Task).all()
+def get_tasks(db: Session, assigned_date):
+    return db.query(Task).filter(Task.assigned_date == assigned_date).all()
 
 def get_task_by_id(db: Session, task_id: int):
     return db.query(Task).filter(Task.id == task_id).first()
