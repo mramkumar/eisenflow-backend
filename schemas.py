@@ -10,7 +10,7 @@ class TaskBase(BaseModel):
     status: Optional[int] = 1
     assignee: int
     assigned_date: Optional[date] = None
-    duration: Optional[timedelta] = None
+    duration: Optional[int] = None
 
 class TaskCreate(TaskBase):
     pass
@@ -22,7 +22,7 @@ class TaskUpdate(BaseModel):
     status: Optional[int] = None
     assignee: Optional[int] = None
     assigned_date: Optional[datetime] = None
-    duration: Optional[timedelta] = None
+    duration: Optional[int] = None
 
 class TaskResponse(TaskBase):
     id: int

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, Text, DateTime, ForeignKey, Date, Interval
+from sqlalchemy import Column, Integer, String, Boolean, Text, DateTime, ForeignKey, Date, Time
 from sqlalchemy.sql import func, expression
 from database import Base
 
@@ -15,7 +15,7 @@ class Task(Base):
     priority = Column(Integer, ForeignKey('quadrant_priority.id'), nullable=False)
     assignee = Column(Integer, ForeignKey('users.id'),  nullable=False)
     status = Column(Integer, ForeignKey('status.id'),  server_default=expression.text('1')) # default: Open
-    duration = Column(Interval, nullable=True)
+    duration = Column(Integer, nullable=True)
 
 # User model
 class User(Base):
