@@ -57,3 +57,9 @@ class StatusResponse(StatusBase):
     status: str
     class Config:
         from_attributes = True
+
+class QuadrantResponse(BaseModel):
+    id: int
+    priority_name: str
+    class Config:
+        from_attributes = True

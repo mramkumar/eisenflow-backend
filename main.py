@@ -47,7 +47,6 @@ def update_task(task_id: int, task: schemas.TaskUpdate, db: Session = Depends(ge
         raise HTTPException(status_code=404, detail="Task not found")
     return task
 
-
 @app.delete("/task/{task_id}", response_model=schemas.TaskResponse)
 def delete_task(task_id: int, db: Session = Depends(get_db)):
     task = crud.delete_task(db, task_id)
@@ -70,3 +69,7 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 @app.post("/status", response_model=schemas.StatusResponse)
 def create_status(status: schemas.StatusCreate, db: Session = Depends(get_db)):
     return crud.create_status(db, status)
+
+@app.get("/quadrants", response_model=list[schemas.QuadrantResponse])
+def get_quadrants(db: Session = Depends(get_db)):
+    return crud.get_quadrants(db)

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from datetime import date 
-from models import Task, User, Status
+from models import Task, User, Status, Quadrant_priority
 from schemas import TaskCreate, TaskUpdate, UserCreate, StatusCreate
 
 
@@ -63,4 +63,6 @@ def create_status(db: Session, status: StatusCreate):
     db.commit()
     db.refresh(db_status)
     return db_status
-    
+
+def get_quadrants(db: Session):
+    return db.query(Quadrant_priority).all()
