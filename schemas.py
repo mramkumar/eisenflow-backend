@@ -24,6 +24,15 @@ class TaskUpdate(BaseModel):
     assigned_date: Optional[datetime] = None
     duration: Optional[int] = None
 
+class TaskPartialUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    priority: Optional[int] = None
+    status: Optional[int] = None
+    assignee: Optional[int] = None
+    assigned_date: Optional[datetime] = None
+    duration: Optional[int] = None
+
 class TaskResponse(TaskBase):
     id: int
     created_date: datetime

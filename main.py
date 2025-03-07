@@ -28,7 +28,6 @@ Base.metadata.create_all(bind=engine)
 def add_task(task: schemas.TaskCreate, db: Session = Depends(get_db)):
     return crud.create_task(db, task)
 
-
 @app.get("/tasks", response_model=list[schemas.TaskResponse])
 def get_tasks(db: Session = Depends(get_db), assigned_date: date = Query(None, description="Date in YYYY-MM-DD format")):
     return crud.get_tasks(db, assigned_date)
@@ -43,6 +42,13 @@ def get_task(task_id: int, db: Session = Depends(get_db)):
 @app.put("/task/{task_id}", response_model=schemas.TaskResponse)
 def update_task(task_id: int, task: schemas.TaskUpdate, db: Session = Depends(get_db)):
     task = crud.update_task(db, task_id, task)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return task
+
+@app.patch("/task/{task_id}", response_model=schemas.TaskResponse)
+def partially_update_task(task_id: int, task: schemas.TaskPartialUpdate, db: Session = Depends(get_db)):
+    task = crud.partially_update_task(db, task_id, task)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     return task

@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from datetime import date 
 from models import Task, User, Status, Quadrant_priority
-from schemas import TaskCreate, TaskUpdate, UserCreate, StatusCreate
+from schemas import TaskCreate, TaskUpdate, TaskPartialUpdate, UserCreate, StatusCreate
 
 
 def create_task(db: Session, task: TaskCreate):
@@ -18,7 +18,6 @@ def create_task(db: Session, task: TaskCreate):
     db.refresh(new_task)
     return new_task
 
-
 def get_tasks(db: Session, assigned_date):
     return db.query(Task).filter(Task.assigned_date == assigned_date).all()
 
@@ -34,6 +33,16 @@ def update_task(db: Session, task_id: int, task_data: TaskUpdate):
         db.commit()
         db.refresh(task)
         
+    return task
+
+def partially_update_task(db: Session, task_id: int, task_data: TaskPartialUpdate):
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if task:
+        task_data_dict = task_data.model_dump(exclude_unset=True)
+        for key, value in task_data_dict.items():
+            setattr(task, key, value)
+        db.commit()
+        db.refresh(task)
     return task
 
 def delete_task(db: Session, task_id: int):
