@@ -22,11 +22,11 @@ origins = ['*']
 # GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
 
 # Secret key for session encryption
-SECRET_KEY = "your-very-secure-secret-key"
+SECRET_KEY = os.getenv("SECRET_KEY")
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 
-GOOGLE_CLIENT_ID = "913592494800-o4eg6tpse1oo1bt5dhapko4d7nh4sh85.apps.googleusercontent.com"
-GOOGLE_CLIENT_SECRET = "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"
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 GOOGLE_REDIRECT_URI = "http://eisenflow.com:8000/auth/callback"
 
 app.add_middleware(
