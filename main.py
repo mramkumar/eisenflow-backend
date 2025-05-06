@@ -1,17 +1,33 @@
+import crud
+import os
+import schemas
 from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.requests import Request
+from starlette.middleware.sessions import SessionMiddleware
+from starlette.responses import RedirectResponse
+from authlib.integrations.starlette_client import OAuth
 from sqlalchemy.orm import Session
 from datetime import date, datetime
 from database import engine, get_db, Base
-import crud
-import schemas
-
 
 app = FastAPI()
 
-origins = [
-    "http://192.168.106.101:3000",
-]
+# origins = os.getenv("ALLOWED_ORIGINS").split(",")
+
+origins = ['*']
+# Load Google OAuth credentials from environment variables
+# GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+# GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+# GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
+
+# Secret key for session encryption
+SECRET_KEY = "your-very-secure-secret-key"
+app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
+
+GOOGLE_CLIENT_ID = "913592494800-o4eg6tpse1oo1bt5dhapko4d7nh4sh85.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET = "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"
+GOOGLE_REDIRECT_URI = "http://eisenflow.com:8000/auth/callback"
 
 app.add_middleware(
     CORSMiddleware,
@@ -20,6 +36,36 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# OAuth Configuration
+oauth = OAuth()
+oauth.register(
+    name="google",
+    client_id=GOOGLE_CLIENT_ID,
+    client_secret=GOOGLE_CLIENT_SECRET,
+    authorize_url="https://accounts.google.com/o/oauth2/auth",
+    access_token_url="https://oauth2.googleapis.com/token",
+    client_kwargs={"scope": "openid email profile"},
+)
+
+@app.get("/auth/login")
+async def login(request: Request):
+    return await oauth.google.authorize_redirect(request, GOOGLE_REDIRECT_URI)
+
+@app.get("/auth/callback")
+async def auth_callback(request: Request):
+    token = await oauth.google.authorize_access_token(request)
+    user_info = await oauth.google.parse_id_token(request, token)
+
+    if not user_info:
+        raise HTTPException(status_code=400, detail="Invalid token")
+
+    return {
+        "email": user_info["email"],
+        "name": user_info["name"],
+        "picture": user_info["picture"],
+        "access_token": token["access_token"]
+    }
 
 # create database table
 Base.metadata.create_all(bind=engine)

@@ -11,6 +11,12 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from models import Base  # Make sure this is your SQLAlchemy Base
 from database import DATABASE_URL  # Your DB URL from database.py
 
+DB_USER = os.getenv("DB_USER", "default_user")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "default_pass")
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_NAME = os.getenv("DB_NAME", "eisenflow")
+DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
+
 config = context.config
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 

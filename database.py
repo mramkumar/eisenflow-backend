@@ -2,7 +2,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base 
 
 
-DATABASE_URL = "mysql://eisenflowadmin:Dataceniq$123@localhost/eisenflow"
+DB_PASSWORD = os.getenv("DB_PASSWORD", "")
+
+DATABASE_URL = "mysql://eisenflowadmin:{DB_PASSWORD}@localhost/eisenflow"
 
 engine = create_engine(DATABASE_URL, echo=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
